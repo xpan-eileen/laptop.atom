@@ -40,8 +40,8 @@ intsA2      := function(type, p)
     A2dot2s := A2dot2s cat [A2dot2^g];
   end for;
 ints        := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..2*p-1]];
-  RF        := recformat< overgroup : GrpLie, A2, A2dot2, intersections >;
-  s         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2), intersections := ints>;
+  RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections >;
+  s         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2), maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)], maxA2dot2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2dot2)], intersections := ints>;
   return s;
 end function;
 
@@ -61,6 +61,8 @@ end function;
 // Get maximal torus of A2
   T2    := StandardMaximalTorus(A2);
   T2gen := Generators(T2);
+// Get maximal torus of G
+  T     := StandardMaximalTorus(G);
 // Get Weyl group of G
   T1    := sub< Codomain(rho) | Generators(T)@rho >;
 // get extended Weyl group
