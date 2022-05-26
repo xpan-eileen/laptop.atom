@@ -28,20 +28,7 @@ intsA2      := function(type, p)
 // now preim are elements in G1 that map onto WeylGroup = W under the projection V->V/(V\cap T)
 
 
-/****
-  T1        := sub<G1|rho(Generators(T))>;
-  Tgen      := Generators(T1);
-  Ngen      := Generators(Normaliser(G1, T1));
-  Wgen      := [];
-  for i in Ngen do
-    if i notin Tgen
-      then Append(~Wgen, i);
-    end if;
-  end for;
-****/
 
-// This is my attempt to find the representatives of the Weyl group W(G), by getting the generators of N_G(T) and
-  // then removing the generators of T. This way I get a much bigger group than W but for the purpose of generating A2.2 I think it is okay...?
   A2dot2    := sub<Codomain(rho)|rho(A2gen), preim>;
   assert #A2dot2 eq #A2*2;
   elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,i>>*elt<G|<9,i+1>>)@rho : i in [1..p-3]];
