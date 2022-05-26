@@ -8,28 +8,32 @@
 // However, I couldn't find a nice way to get these representatives...
 intsA2      := function(type, p)
   G         := GroupOfLieType(type, p);
+  rk        := Rank(G);
   rho       := StandardRepresentation(G);
   K<x>      := GF(p);
   G1        := Image(rho);
   A2        := SubsystemSubgroup(G,{2, 12});
   A2gen     := Generators(SubsystemSubgroup(G,{2, 12}));
   A2mat     := sub<Codomain(rho)|rho(A2gen)>;
-  T         := StandardMaximalTorus(G);
-
+  // T         := StandardMaximalTorus(G);
 //now get pre-images of W in G1
 // first get torus
-   T1  := sub< Codomain(rho) | Generators(T)@rho >;
+   // T1  := sub< Codomain(rho) | Generators(T)@rho >;
 // get extended Weyl group
-   V   := sub< Codomain(rho) |  [   elt<G | x >@rho : x in [1..Rank(G)] ] >;
+   // V   := sub< Codomain(rho) |  [   elt<G | x >@rho : x in [1..Rank(G)] ] >;
 // check order: V / (T1 \cap V) \cong WeylGroup(G)
-   W, pi := quo<V | V meet T1>;
-   assert #W eq #WeylGroup(G);
-   preim := [ i@@pi : i in UserGenerators(W)];
+   // W, pi := quo<V | V meet T1>;
+   // assert #W eq #WeylGroup(G);
+   // preim := [ i@@pi : i in UserGenerators(W)];
 // now preim are elements in G1 that map onto WeylGroup = W under the projection V->V/(V\cap T)
-
-
-
-  A2dot2    := sub<Codomain(rho)|rho(A2gen), preim>;
+   // A2dot2    := sub<Codomain(rho)|rho(A2gen), preim>;
+// Get Weyl group of G
+  W         := WeylGroup(G);
+  assert #W eq #WeylGroup(G);
+// Get generators of W
+  Wgen      := [elt<G|W.i>@rho : i in [1..rk]];
+// Generate A2.2 = <A2, W>
+  A2dot2    := sub<Codomain(rho)|rho(A2gen), Wgen>;
   assert #A2dot2 eq #A2*2;
   elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,i>>*elt<G|<9,i+1>>)@rho : i in [1..p-3]];
   elts      := elts cat [(elt<G|<1,i>>*elt<G|<2,5>>*elt<G|<6,5>>*elt<G|<4,3>>*elt<G|<9,i+1>>*elt<G|1>*elt<G|<3,i>>*elt<G|2>)@rho : i in [1..p-1]];
