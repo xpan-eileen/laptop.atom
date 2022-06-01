@@ -100,7 +100,7 @@ end function;
    A2dot2s:= [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]];
    A2dot2s:= A2dot2s cat [A2dot2^rho(elt<G|<3,i>>*g) : i in [1..p]];
   ints    := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..p+2]]; ints; g;
-    K     := [A2dot2 meet A2dot2s[i] : i in [1..p+2]];
+    K     := {A2dot2 meet A2dot2s[i] : i in [1..p+2]};
    S0     := #A2dot2;
    
    
