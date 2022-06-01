@@ -26,9 +26,7 @@ intsA2      := function(type, p)
    assert #W eq #WeylGroup(G);
    preim := [ i@@pi : i in UserGenerators(W)];
 // now preim are elements in G1 that map onto WeylGroup = W under the projection V->V/(V\cap T)
-
-
-
+// Generate A2.2 = <A2, preim>:
   A2dot2    := sub<Codomain(rho)|rho(A2gen), preim>;
   assert #A2dot2 eq #A2*2;
   elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,i>>*elt<G|<9,i+1>>)@rho : i in [1..p-3]];
@@ -212,3 +210,8 @@ end function;
   end for;
   // isomtypes;
   //[ C1, C1, S3, C1, C2, S3, C2, S3, D6, S3, S3, D4, D4, D4, D6, SL(2,5):C2^2, D5*F5, He5:(C2*C4), D5*F5, C4.A5, F5^2 ]
+
+
+//
+P<q>:=PolynomialRing(Rationals());
+P!ChevalleyOrderPolynomial("G",2);
