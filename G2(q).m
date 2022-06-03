@@ -222,3 +222,8 @@ end function;
   end for;
   // isomtypes;
   //[ C1, C1, S3, C1, C2, S3, C2, S3, D6, S3, S3, D4, D4, D4, D6, SL(2,5):C2^2, D5*F5, He5:(C2*C4), D5*F5, C4.A5, F5^2 ]
+
+
+//
+P<q>:=PolynomialRing(Rationals());
+P!ChevalleyOrderPolynomial("G",2);
