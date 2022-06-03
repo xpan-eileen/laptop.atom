@@ -34,19 +34,22 @@ intsA2      := function(type, p)
   Wgen      := [elt<G|W.i>@rho : i in [1..rk]];
 // Generate A2.2 = <A2, W>
   A2dot2    := sub<Codomain(rho)|rho(A2gen), Wgen>;
-  assert #A2dot2 eq #A2*2;
-  elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,i>>*elt<G|<9,i+1>>)@rho : i in [1..p-3]];
-  elts      := elts cat [(elt<G|<1,i>>*elt<G|<2,5>>*elt<G|<6,5>>*elt<G|<4,3>>*elt<G|<9,i+1>>*elt<G|1>*elt<G|<3,i>>*elt<G|2>)@rho : i in [1..p-1]];
-  A2s       := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]];
-  A2dot2s   := [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]];
-  for g in elts do
-    A2s     := A2s cat [A2mat^g];
-    A2dot2s := A2dot2s cat [A2dot2^g];
+  s0        := 2*(p^8 - p^6 - p^5 + p^3);
+  assert #A2dot2 eq s0;
+  s         := s0^2;
+  elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,1>>*elt<G|<9,i>>)@rho : i in [1..1/2*(p - 1)]];
+  A2s       := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^g : g in elts];
+  A2dot2s   := [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2dot2^g : g in elts];
+  ints      := [[A2mat meet A2s[i], A2dot2 meet A2dot2s[i]] : i in [1..1/2*(p + 1)+2]];
+  dcsizes   := [s/#ints[i][2] : i in [1..1/2*(p + 1)+2]];
+  sum       := 0;
+  for i in [1..1/2*(p + 1)+2] do sum := sum + dcsizes[i];
   end for;
-ints        := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..2*p-1]];
-  RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections >;
-  s         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2), maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)], maxA2dot2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2dot2)], intersections := ints>;
-  return s;
+  assert sum eq (p^14 - p^12 - p^8 + p^6);
+  types     := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..1/2*(p - 1)]];
+  RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, dcsizes >;
+  r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2), maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)], maxA2dot2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2dot2)], intersections := types, dcsizes := dcsizes>;
+  return r;
 end function;
 
 
@@ -100,12 +103,15 @@ end function;
  //  A2s    := [A2mat^rho(elt<G|<1,i>>) : i in [1..5]] cat [A2mat^rho(elt<G|<7,i>>*Random(G)) : i in [1..5]];
  //  A2dot2s:= [A2dot2^rho(elt<G|<1,i>>) : i in [1..5]] cat [A2dot2^rho(elt<G|<7,i>>*Random(G)) : i in [1..5]];
  // ints    := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..10]]; ints;
-    g     := Random(G);
-   A2s    := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]];
-   A2s    := A2s cat [A2mat^rho(elt<G|<3,i>>*g) : i in [1..p]];
-   A2dot2s:= [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]];
-   A2dot2s:= A2dot2s cat [A2dot2^rho(elt<G|<3,i>>*g) : i in [1..p]];
-  ints    := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..p+2]]; ints; g;
+   s0     := 2*(p^8 - p^6 - p^5 + p^3);
+   s      := s0^2;
+   A2s    := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^rho(elt<G|<3,1>>*elt<G|<4, 1>>)];
+   A2s    := A2s cat [A2mat^rho(elt<G|<3,i>>*elt<G|<9,i>>) : i in [1..1/2*(p - 1)]];
+   A2dot2s:= [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2dot2^rho(elt<G|<3,1>>*elt<G|<4, 1>>)];
+   A2dot2s:= A2dot2s cat [A2dot2^rho(elt<G|<3,1>>*elt<G|<9,i>>) : i in [1..1/2*(p - 1)]];
+   ints   := [[A2mat meet A2s[i], A2dot2 meet A2dot2s[i]] : i in [1..1/2*(p + 1)+2]];
+   dcsizes:= [s/#ints[i][2] : i in [1..1/2*(p + 1)+2]];
+   types  := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..1/2*(p + 1)+2]]; types; dcsizes
 
  // Outcomes of ints:
  //   [ C5:D5.A5, C5:D5.A5 ],
