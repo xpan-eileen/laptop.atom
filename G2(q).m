@@ -46,16 +46,19 @@ intsA2      := function(type, p)
   for i in [1..1/2*(p + 1)+2] do sum := sum + dcsizes[i];
   end for;
   assert sum eq (p^14 - p^12 - p^8 + p^6);
-  types     := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..1/2*(p - 1)]];
-  RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, dcsizes >;
-  r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2), maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)], maxA2dot2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2dot2)], intersections := types, dcsizes := dcsizes>;
+  types     := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..1/2*(p + 1) + 2]];
+  RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, types, dcsizes >;
+  r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2),
+                maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)],
+                maxA2dot2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2dot2)],
+                intersections := ints, types := types, dcsizes := dcsizes>;
   return r;
 end function;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 // Earlier draft code
-// Construct G2 over GF(p)
+// Construct G2 over GF(p)+
   p   := 7;
   G   := GroupOfLieType("G2", GF(p));
 // Get standard representation
