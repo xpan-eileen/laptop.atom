@@ -106,7 +106,7 @@ end function;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Earlier draft code
-// Construct G2 over GF(p)+
+// Construct G2 over GF(p)
   p   := 7;
   G   := GroupOfLieType("G2", GF(p));
 // Get standard representation
