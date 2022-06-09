@@ -107,15 +107,16 @@ end function;
 ////////////////////////////////////////////////////////////////////////////////
 // Earlier draft code
 // Construct G2 over GF(p)
-  p   := 7;
-  G   := GroupOfLieType("G2", GF(p));
+  p     := 7;
+  G     := GroupOfLieType("G2", GF(p));
 // Get standard representation
-  rho := StandardRepresentation(G);
-  G1  := Image(rho);
+  rho   := StandardRepresentation(G);
+  G1    := Image(rho);
 // Get A2 SubsystemSubgroup
-  A2  := SubsystemSubgroup(G,{2, 12});
-// Order(A2);
+  A2    := SubsystemSubgroup(G,{2, 12});
   A2gen := Generators(A2);
+  A2mat := sub<Codomain(rho)|rho(A2gen)>;
+
 // Get maximal torus of A2
   T2    := StandardMaximalTorus(A2);
   T2gen := Generators(T2);
@@ -124,7 +125,7 @@ end function;
 // Get Weyl group of G
   T1    := sub< Codomain(rho) | Generators(T)@rho >;
 // get extended Weyl group
-    V   := sub< Codomain(rho) |  [   elt<G | x >@rho : x in [1..Rank(G)] ] >;
+  V     := sub< Codomain(rho) |  [   elt<G | x >@rho : x in [1..Rank(G)] ] >;
 // check order: V / (T1 \cap V) \cong WeylGroup(G)
   W, pi := quo<V | V meet T1>;
   assert #W eq #WeylGroup(G);
@@ -141,13 +142,16 @@ end function;
   elt<G|<7,x>>,
   elt<G|<12,x>>];
   A1A1mat := sub<Codomain(rho)|rho(rts)>;
-
+  A1      := SubsystemSubgroup(G,{12});
+  rts     := [elt<G|<12,1>>,
+                elt<G|<12,x>>];
+  A1mat   := sub<Codomain(rho)|rho(rts)>;
+  U       := sub<Codomain(rho)|rho(rts), T2gen>;
  // Generate <U_{-3\alpha - 2\beta}, U_{-3\alpha - \beta}, U_{\pm \beta}, T2>
-   A2mat  := sub<Codomain(rho)|rho(A2gen)>;
-   H      := sub<A2mat|rho(rts),rho(T2gen)>;
+  H       := sub<A2mat|rho(rts),rho(T2gen)>;
  // Generate a class representative of maximal subgroups of type A2.2. The Normaliser function could fail badly when G is large.
  // Ideally, generate <A2, W>, but how??
-   A2dot2 := sub<Codomain(rho)|rho(A2gen), preim>;
+  A2dot2  := sub<Codomain(rho)|rho(A2gen), preim>;
  //  Order(N);
  //  GroupName(N);
  //  GroupName(H);
