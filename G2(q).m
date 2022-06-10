@@ -29,7 +29,6 @@ intsA2      := function(p)
    // A2dot2    := sub<Codomain(rho)|rho(A2gen), preim>;
 // Get Weyl group of G
   W         := WeylGroup(G);
-  assert #W eq #WeylGroup(G);
 // Get generators of W
   Wgen      := [elt<G|W.i>@rho : i in [1..rk]];
 // Generate A2.2 = <A2, W>
@@ -279,6 +278,30 @@ end function;
   // isomtypes;
   //[ C1, C1, S3, C1, C2, S3, C2, S3, D6, S3, S3, D4, D4, D4, D6, SL(2,5):C2^2, D5*F5, He5:(C2*C4), D5*F5, C4.A5, F5^2 ]
 
+//
+K<x>  := GF(p);
+rts   := [
+elt<G|<2,1>>,
+elt<G|<5,1>>,
+elt<G|<6,1>>,
+elt<G|<2,x>>,
+elt<G|<5,x>>,
+elt<G|<6,x>>
+];
+T     := StandardMaximalTorus(G);
+Tgen  := Generators(T)@rho;
+sub<Codomain(rho)|rho(rts)>;
+rts   := [
+elt<G|<5,1>>,
+elt<G|<6,1>>,
+elt<G|<8,1>>,
+elt<G|<12,1>>,
+elt<G|<5,x>>,
+elt<G|<6,x>>,
+elt<G|<8,x>>,
+elt<G|<12,x>>
+];
+U:=sub<Codomain(rho)|rho(rts)>;
 
 //
 P<q>:=PolynomialRing(Rationals());
