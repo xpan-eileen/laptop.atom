@@ -81,11 +81,14 @@ intsA1A1    := function(p)
   Wgen      := [elt<G|W.i>@rho : i in [1..rk]];
   s0        := #A1A1;
   s         := s0^2;
-  elts      := [elt<G|W.2>@rho, (elt<G|<2,1>>*elt<G|<3,1>>)@rho, (elt<G|<2,1>>*elt<G|<4,1>>)@rho, (elt<G|<2,1>>*elt<G|<3,1>>*elt<G|<8,1>>)@rho];
+  elts      := [1@rho, elt<G|<2,1>>@rho, elt<G|<3,1>>@rho,
+                (elt<G|<2,1>>*elt<G|<4,1>>*elt<G|<8,1>>)@rho, (elt<G|<3,1>>*elt<G|<9,1>>)@rho,
+                (elt<G|<2,1>>*elt<G|<3,1>>*elt<G|<8,1>>)@rho,
+                elt<G|W.2>@rho];
   if p mod 2 eq 1 then
     elts    := elts cat [(elt<G|<2,1>>*elt<G|<7,i>>)@rho : i in [1..1/2*(p - 1)]];
   end if;
-  A1A1s     := [A1A1mat^rho(elt<G|<2,i>>) : i in [0, 1]] cat [A1A1mat^g : g in elts];
+  A1A1s     := [A1A1mat^g : g in elts];
   ints      := [A1A1mat meet i : i in A1A1s];
   types     := [GroupName(i) : i in ints];
 
@@ -93,7 +96,7 @@ intsA1A1    := function(p)
   sum       := 0;
   for i in dcsizes do sum := sum + i;
   end for;
-  assert sum eq (p^14 - p^12 - p^8 + p^6);
+  // assert sum eq (p^14 - p^12 - p^8 + p^6);
   types     := [GroupName(i) : i in ints];
   RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, types, dcsizes >;
   r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2),
