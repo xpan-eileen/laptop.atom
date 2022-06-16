@@ -109,8 +109,9 @@ end function;
 ////////////////////////////////////////////////////////////////////////////////
 // Earlier draft code
 // Construct G2 over GF(p)
-  p     := 7;
+  p     := 13;
   G     := GroupOfLieType("G2", GF(p));
+  rk    := Rank(G);
 // Get standard representation
   rho   := StandardRepresentation(G);
   G1    := Image(rho);
@@ -124,14 +125,20 @@ end function;
   T2gen := Generators(T2);
 // Get maximal torus of G
   T     := StandardMaximalTorus(G);
+  T1    := sub< Codomain(rho) | Generators(T)@rho >;
 // Get Weyl group of G
   T1    := sub< Codomain(rho) | Generators(T)@rho >;
-// get extended Weyl group
-  V     := sub< Codomain(rho) |  [   elt<G | x >@rho : x in [1..Rank(G)] ] >;
-// check order: V / (T1 \cap V) \cong WeylGroup(G)
-  W, pi := quo<V | V meet T1>;
-  assert #W eq #WeylGroup(G);
-  preim := [ i@@pi : i in UserGenerators(W)];
+  W     := WeylGroup(G);
+  Wgen  := [elt<G|W.i>@rho : i in [1..rk]];
+// Generate A2.2 = <A2, W>
+  A2dot2:= sub<Codomain(rho)|rho(A2gen), Wgen>;
+  g     := (elt<G|<3,1>>*elt<G|<9,1/2*(p - 1)>>)@rho;
+  elt<G|<3,1>>*elt<G|<9,1/2*(p - 1)>>;
+  T1.1^g in A2mat; T1.2^g in A2mat;
+  T1.1^g in A2dot2; T1.2^g in A2dot2;
+  k     := 6;
+  (T1.1^k)^g in A2mat; (T1.2^k)^g in A2mat;
+  (T1.1^k)^g in A2dot2; (T1.2^k)^g in A2dot2;
 // Get nilpotent elements x_r(t)
   K<x>  := GF(p);
   rts   :=
@@ -148,19 +155,7 @@ end function;
   rts     := [elt<G|<12,1>>,
                 elt<G|<12,x>>];
   A1mat   := sub<Codomain(rho)|rho(rts)>;
-  U       := sub<Codomain(rho)|rho(rts), T2gen>;
- // Generate <U_{-3\alpha - 2\beta}, U_{-3\alpha - \beta}, U_{\pm \beta}, T2>
-  H       := sub<A2mat|rho(rts),rho(T2gen)>;
- // Generate a class representative of maximal subgroups of type A2.2. The Normaliser function could fail badly when G is large.
- // Ideally, generate <A2, W>, but how??
-  A2dot2  := sub<Codomain(rho)|rho(A2gen), preim>;
- //  Order(N);
- //  GroupName(N);
- //  GroupName(H);
- //  Get conjugates of A2 and A2.2
- //  A2s    := [A2mat^rho(elt<G|<1,i>>) : i in [1..5]] cat [A2mat^rho(elt<G|<7,i>>*Random(G)) : i in [1..5]];
- //  A2dot2s:= [A2dot2^rho(elt<G|<1,i>>) : i in [1..5]] cat [A2dot2^rho(elt<G|<7,i>>*Random(G)) : i in [1..5]];
- // ints    := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..10]]; ints;
+
    s0     := 2*(p^8 - p^6 - p^5 + p^3);
    s      := s0^2;
    A2s    := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^rho(elt<G|<3,1>>*elt<G|<4, 1>>)];
