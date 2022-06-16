@@ -64,6 +64,8 @@ intsA1A1    := function(p)
   K<x>      := GF(p);
   G1        := Image(rho);
   A1A1      := SubsystemSubgroup(G,{1, 12});
+  T         := StandardMaximalTorus(G);
+  Tgen      := Generators(T)@rho;
   rts       := [elt<G|<1,1>>,
                 elt<G|<6,1>>,
                 elt<G|<7,1>>,
@@ -72,18 +74,18 @@ intsA1A1    := function(p)
                 elt<G|<6,x>>,
                 elt<G|<7,x>>,
                 elt<G|<12,x>>];
-  A1A1mat   := sub<Codomain(rho)|rho(rts)>;
-  asserts #A1A1 eq #A1A1mat;
+  A1A1mat   := sub<Codomain(rho)|rho(rts), Tgen>;
+  s0        := #A1A1;
+  assert #A1A1 eq #A1A1mat;
   g         := (elt<G|<2,1>>*elt<G|<3,1>>*elt<G|<8,1>>)@rho;
   A1A1mat meet A1A1mat^g;
   GroupName($1);
   W         := WeylGroup(G);
   Wgen      := [elt<G|W.i>@rho : i in [1..rk]];
-  s0        := #A1A1;
   s         := s0^2;
   elts      := [1@rho, elt<G|<2,1>>@rho, elt<G|<3,1>>@rho,
                 (elt<G|<2,1>>*elt<G|<4,1>>*elt<G|<8,1>>)@rho, (elt<G|<3,1>>*elt<G|<9,1>>)@rho,
-                (elt<G|<2,1>>*elt<G|<3,1>>*elt<G|<8,1>>)@rho,
+                (elt<G|<2,1>>*elt<G|<7,1>>)@rho,
                 elt<G|W.2>@rho];
   if p mod 2 eq 1 then
     elts    := elts cat [(elt<G|<2,1>>*elt<G|<7,i>>)@rho : i in [1..1/2*(p - 1)]];
@@ -91,7 +93,7 @@ intsA1A1    := function(p)
   A1A1s     := [A1A1mat^g : g in elts];
   ints      := [A1A1mat meet i : i in A1A1s];
   types     := [GroupName(i) : i in ints];
-
+  types;
   dcsizes   := [s/#i : i in ints];
   sum       := 0;
   for i in dcsizes do sum := sum + i;
@@ -127,7 +129,6 @@ end function;
   T     := StandardMaximalTorus(G);
   T1    := sub< Codomain(rho) | Generators(T)@rho >;
 // Get Weyl group of G
-  T1    := sub< Codomain(rho) | Generators(T)@rho >;
   W     := WeylGroup(G);
   Wgen  := [elt<G|W.i>@rho : i in [1..rk]];
 // Generate A2.2 = <A2, W>
