@@ -36,7 +36,7 @@ intsA2      := function(p)
   s0        := 2*(p^8 - p^6 - p^5 + p^3);
   assert #A2dot2 eq s0;
   s         := s0^2;
-  elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,1>>*elt<G|<9,i>>)@rho : i in [1..1/2*(p - 1)]];
+  elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<7,1>>*elt<G|<1,i>>)@rho : i in [1..1/2*(p - 1)]];
   A2s       := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^g : g in elts];
   A2dot2s   := [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2dot2^g : g in elts];
   ints      := [[A2mat meet A2s[i], A2dot2 meet A2dot2s[i]] : i in [1..1/2*(p + 1)+2]];
@@ -45,7 +45,7 @@ intsA2      := function(p)
   for i in [1..1/2*(p + 1)+2] do sum := sum + dcsizes[i];
   end for;
   assert sum eq (p^14 - p^12 - p^8 + p^6);
-  types     := [[GroupName(A2mat meet A2s[i]), GroupName(A2dot2 meet A2dot2s[i])] : i in [1..1/2*(p + 1) + 2]];
+  types     := [[GroupName(ints[i][1]), GroupName(ints[i][2])] : i in [1..1/2*(p + 1) + 2]];
   RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, types, dcsizes >;
   r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2),
                 //maxA2 := [GroupName(i`subgroup):i in MaximalSubgroups(A2mat)],
@@ -85,10 +85,9 @@ intsA1A1    := function(p)
   s         := s0^2;
   elts      := [1@rho, elt<G|<2,1>>@rho, elt<G|<3,1>>@rho,
                 (elt<G|<2,1>>*elt<G|<4,1>>*elt<G|<8,1>>)@rho, (elt<G|<3,1>>*elt<G|<9,1>>)@rho,
-                (elt<G|<2,1>>*elt<G|<7,1>>)@rho,
                 elt<G|W.2>@rho];
   if p mod 2 eq 1 then
-    elts    := elts cat [(elt<G|<2,1>>*elt<G|<7,i>>)@rho : i in [1..1/2*(p - 1)]];
+    elts    := elts cat [(elt<G|<7,1>>*elt<G|<2,i>>)@rho : i in [1..1/2*(p - 1)]];
   end if;
   A1A1s     := [A1A1mat^g : g in elts];
   ints      := [A1A1mat meet i : i in A1A1s];
@@ -142,6 +141,7 @@ end function;
   (T1.1^k)^g in A2dot2; (T1.2^k)^g in A2dot2;
 // Get nilpotent elements x_r(t)
   K<x>  := GF(p);
+
   rts   :=
   [elt<G|<1,1>>,
   elt<G|<6,1>>,
@@ -169,45 +169,10 @@ end function;
 
  // Outcomes of ints:
  //   [ C5:D5.A5, C5:D5.A5 ],
- //   [ C5:D5.A5, C5:D5.A5 ],
- //   [ C5:D5.A5, C5:D5.A5 ],
- //   [ C5:D5.A5, C5:D5.A5 ],
  //   [ PSL(3,5), PSL(3,5).C2 ], just the groups themselves
  //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), SL(2,5):C2 ]
-
  //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), SL(2,5):C2 ],
  //   [ He5, C5^2:C10 ],
- //   [ He5, C5^2:C10 ],
- //   [ SL(2,5), SL(2,5):C2 ]
-
- //   [ He5, C5^2:C10 ],
- //   [ He5, C5^2:C10 ],
- //   [ He5, C5^2:C10 ],
- //   [ C5:D5.A5, C5:D5.A5 ],
- //   [ He5, C5^2:C10 ]
-
- //   [ He5, C5^2:C10 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ He5, C5^2:C10 ],
- //   [ SL(2,5), Q8.A5 ]
-
- //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), Q8.A5 ]
-
- //   [ C5:D5.A5, C5:D5.A5 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ SL(2,5), Q8.A5 ],
- //   [ SL(2,5), SL(2,5):C2 ],
- //   [ C5:D5.A5, C5:D5.A5 ]
 
 
  // Construct root subgroup
@@ -244,16 +209,7 @@ end function;
   GroupName(ms[4] meet H3);
   GroupName(ms[4] meet H4);
   GroupName(ms[4] meet H5);
-  GroupName(ms[4] meet A2mat); // Clearly there is some randomness in generating A2, as every time running these functions different results are obtained.
-  // Possible outcomes:
-  // C5^2:C10              SL(2,5):C2             C5:D5.A5      C5^2:C10
-  // SL(2,5):C2            C5^2:C10               C5:D5.A5      C5^2:C10
-  // SL(2,5):C2            C5^2:C10               C5:D5.A5      C5^2:C10
-  // C5^2:C10              SL(2,5):C2             C5:D5.A5      C5^2:C10
-  // PSL(3,5).C2           PSL(3,5).C2            PSL(3,5).C2   PSL(3,5).C2
-  // SL(2,5), C4.A5, He5   C4.A5, SL(2, 5), He5   SL(2, 5)      He5, C4.A5
-
-
+  GroupName(ms[4] meet A2mat);
 
 
   ms:=[];
