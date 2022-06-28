@@ -36,6 +36,7 @@ intsA2      := function(p)
   s0        := 2*(p^8 - p^6 - p^5 + p^3);
   assert #A2dot2 eq s0;
   s         := s0^2;
+  a         := PrimitiveElement(GF(p));
   elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<3,1>>*elt<G|<9,i>>)@rho : i in [1..1/2*(p - 1)]];
   A2s       := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^g : g in elts];
   A2dot2s   := [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2dot2^g : g in elts];
