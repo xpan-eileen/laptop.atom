@@ -36,15 +36,19 @@ intsA2      := function(q)
   s0        := 2*(q^8 - q^6 - q^5 + q^3);
   assert #A2dot2 eq s0;
   s         := s0^2;
-  elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<7,1>>*elt<G|<1,x^i>>)@rho : i in [0..1/2*(q - 3)]];
+  if IsPrime(q) then
+    elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<7,1>>*elt<G|<1,i>>)@rho : i in [1..1/2*(q - 1)]];
+  else
+    elts      := [(elt<G|<3,1>>*elt<G|<4,1>>)@rho] cat [(elt<G|<7,1>>*elt<G|<1,x^i>>)@rho : i in [0..1/2*(q - 3)]];
+  end if;
   A2s       := [A2mat^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2mat^g : g in elts];
   A2dot2s   := [A2dot2^rho(elt<G|<1,i>>) : i in [0, 1]] cat [A2dot2^g : g in elts];
   ints      := [[A2mat meet A2s[i], A2dot2 meet A2dot2s[i]] : i in [1..1/2*(q + 1)+2]];
-  dcsizes   := [s/#ints[i][2] : i in [1..1/2*(p + 1)+2]];
+  dcsizes   := [s/#ints[i][2] : i in [1..1/2*(q + 1)+2]];
   sum       := 0;
-  for i in [1..1/2*(p + 1)+2] do sum := sum + dcsizes[i];
+  for i in [1..1/2*(q + 1)+2] do sum := sum + dcsizes[i];
   end for;
-  assert sum eq (p^14 - p^12 - p^8 + p^6);
+  assert sum eq (q^14 - q^12 - q^8 + q^6);
   types     := [[GroupName(ints[i][1]), GroupName(ints[i][2])] : i in [1..1/2*(q + 1) + 2]];
   RF        := recformat< overgroup : GrpLie, A2, A2dot2, maxA2, maxA2dot2, intersections, types, dcsizes >;
   r         := rec< RF | overgroup := G, A2 := GroupName(A2mat), A2dot2 := GroupName(A2dot2),
@@ -111,6 +115,7 @@ end function;
 // Earlier draft code
 // Construct G2 over GF(p)
   p     := 13;
+  K<x>  := GF(p);
   G     := GroupOfLieType("G2", GF(p));
   rk    := Rank(G);
 // Get standard representation
@@ -126,12 +131,42 @@ end function;
   T2gen := Generators(T2);
 // Get maximal torus of G
   T     := StandardMaximalTorus(G);
-  T1    := sub< Codomain(rho) | Generators(T)@rho >;
+  Tgen  := Generators(T);
+  T1    := sub< Codomain(rho) | Tgen@rho >;
+  t1    := elt<G|Tgen[1]>;
+  t2    := elt<G|Tgen[2]>;
 // Get Weyl group of G
   W     := WeylGroup(G);
   Wgen  := [elt<G|W.i>@rho : i in [1..rk]];
+  Wmat  := sub<Codomain(rho)|Wgen>;
+  w1    := elt<G|LongestElement(W)>;
 // Generate A2.2 = <A2, W>
   A2dot2:= sub<Codomain(rho)|rho(A2gen), Wgen>;
+  a     := elt<G|<1,1>>;
+  g1    := a@rho;
+  b     := elt<G|<3,1>>*elt<G|<4,1>>;
+  g2    := b@rho;
+  if IsPrime(p) then
+    c   := [elt<G|<7,1>>*elt<G|<1,i>>: i in [1..p-1]];
+  else
+    c   := [elt<G|<7,1>>*elt<G|<1,x^i>>: i in [0..p-2]];
+  end if;
+  c     := [elt<G|<9,1>>*elt<G|<3,i>>: i in [1..p-1]];
+  c     := [elt<G|<10,1>>*elt<G|<4,i>>: i in [1..p-1]];
+  //[GroupName(A2dot2^(i@rho) meet A2dot2): i in c];
+  c1    := elt<G|<7,1>>*elt<G|<1,1>>;
+  c2    := elt<G|<7,1>>*elt<G|<1,2>>;
+  gc1   := c[1]@rho;
+  gc2   := c[2]@rho;
+  U     := sub<Codomain(rho)|rho(elt<G|<4,1>>*elt<G|<3,1>>)>;
+  tmp   := [i:i in Wmat|g2^i in U and i notin T1];
+
+  U     :=sub<Codomain(rho)|rho(elt<G|<7,1>>*elt<G|<1,1>>)>;
+  tmp   := [i:i in Wmat|gc1^i in U and i notin T1];
+
+  assert sub<Codomain(rho)|rho(A2gen), tmp> eq A2dot2;
+  tmp[1]^g2 in A2dot2;
+  [GroupName(i): i in [Wmat^g1 meet A2mat, Wmat^g1 meet A2dot2, A2mat^g1 meet A2mat, A2dot2^g1 meet A2dot2]];
   g     := (elt<G|<3,1>>*elt<G|<9,1/2*(p - 1)>>)@rho;
   elt<G|<3,1>>*elt<G|<9,1/2*(p - 1)>>;
   T1.1^g in A2mat; T1.2^g in A2mat;
@@ -140,17 +175,15 @@ end function;
   (T1.1^k)^g in A2mat; (T1.2^k)^g in A2mat;
   (T1.1^k)^g in A2dot2; (T1.2^k)^g in A2dot2;
 // Get nilpotent elements x_r(t)
-  K<x>  := GF(p);
+
 
   rts   :=
-  [elt<G|<1,1>>,
+  [elt<G|<2,1>>,
+  elt<G|<5,1>>,
   elt<G|<6,1>>,
-  elt<G|<7,1>>,
-  elt<G|<12,1>>,
-  elt<G|<1,x>>,
-  elt<G|<6,x>>,
-  elt<G|<7,x>>,
-  elt<G|<12,x>>];
+  elt<G|<2,x>>,
+  elt<G|<5,x>>,
+  elt<G|<6,x>>];
   A1A1mat := sub<Codomain(rho)|rho(rts)>;
   A1      := SubsystemSubgroup(G,{12});
   rts     := [elt<G|<12,1>>,
