@@ -158,13 +158,23 @@ end function;
   c2    := elt<G|<7,1>>*elt<G|<1,2>>;
   gc1   := c[1]@rho;
   gc2   := c[2]@rho;
+  tmp   := [i:i in Wmat|i^g2 in A2dot2 and i^g2 notin A2mat and i notin T1];
+  assert sub<Codomain(rho)|rho(A2gen), tmp> eq A2dot2;
+
+  tmp   := [];
+  for i in T do
+    if c2^-1*elt<G|i>*c2 notin A2 and rho(c2^-1*elt<G|i>*c2) in A2dot2 then
+      Append(~tmp, i);
+    end if;
+  end for;
+
+
   U     := sub<Codomain(rho)|rho(elt<G|<4,1>>*elt<G|<3,1>>)>;
   tmp   := [i:i in Wmat|g2^i in U and i notin T1];
 
   U     :=sub<Codomain(rho)|rho(elt<G|<7,1>>*elt<G|<1,1>>)>;
   tmp   := [i:i in Wmat|gc1^i in U and i notin T1];
 
-  assert sub<Codomain(rho)|rho(A2gen), tmp> eq A2dot2;
   tmp[1]^g2 in A2dot2;
   [GroupName(i): i in [Wmat^g1 meet A2mat, Wmat^g1 meet A2dot2, A2mat^g1 meet A2mat, A2dot2^g1 meet A2dot2]];
   g     := (elt<G|<3,1>>*elt<G|<9,1/2*(p - 1)>>)@rho;
@@ -176,14 +186,32 @@ end function;
   (T1.1^k)^g in A2dot2; (T1.2^k)^g in A2dot2;
 // Get nilpotent elements x_r(t)
 
+rts       := [elt<G|<1,1>>,
+              elt<G|<2,1>>,
+              elt<G|<3,1>>,
+              elt<G|<4,1>>,
+              elt<G|<5,1>>,
+              elt<G|<6,1>>,
+              elt<G|<7,x>>,
+              elt<G|<8,x>>,
+              elt<G|<9,x>>,
+              elt<G|<10,x>>,
+              elt<G|<11,x>>,
+              elt<G|<12,x>>];
+U1:= sub<Codomain(rho)|rho(elt<G|<1,1>>),rho(elt<G|<1,x>>)>;
+U2:= sub<Codomain(rho)|rho(elt<G|<2,1>>),rho(elt<G|<2,x>>)>;
+U3:= sub<Codomain(rho)|rho(elt<G|<3,1>>),rho(elt<G|<3,x>>)>;
+U4:= sub<Codomain(rho)|rho(elt<G|<4,1>>),rho(elt<G|<4,x>>)>;
+U5:= sub<Codomain(rho)|rho(elt<G|<5,1>>),rho(elt<G|<5,x>>)>;
+U6:= sub<Codomain(rho)|rho(elt<G|<6,1>>),rho(elt<G|<6,x>>)>;
+U7:= sub<Codomain(rho)|rho(elt<G|<7,1>>),rho(elt<G|<7,x>>)>;
+U8:= sub<Codomain(rho)|rho(elt<G|<8,1>>),rho(elt<G|<8,x>>)>;
+U9:= sub<Codomain(rho)|rho(elt<G|<9,1>>),rho(elt<G|<9,x>>)>;
+U10:= sub<Codomain(rho)|rho(elt<G|<10,1>>),rho(elt<G|<10,x>>)>;
+U11:= sub<Codomain(rho)|rho(elt<G|<11,1>>),rho(elt<G|<11,x>>)>;
+U12:= sub<Codomain(rho)|rho(elt<G|<12,1>>),rho(elt<G|<12,x>>)>;
 
-  rts   :=
-  [elt<G|<2,1>>,
-  elt<G|<5,1>>,
-  elt<G|<6,1>>,
-  elt<G|<2,x>>,
-  elt<G|<5,x>>,
-  elt<G|<6,x>>];
+
   A1A1mat := sub<Codomain(rho)|rho(rts)>;
   A1      := SubsystemSubgroup(G,{12});
   rts     := [elt<G|<12,1>>,
